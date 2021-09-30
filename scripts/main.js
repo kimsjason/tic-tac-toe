@@ -3,6 +3,10 @@ let gameBoard = (function() {
     board.forEach(row => console.log(row));
 })();
 
+let gameControl = (function() {
+    
+})();
+
 let Player = (name, mark) => {
     const getName = () => name;
     const getMark = () => mark;
