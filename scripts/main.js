@@ -6,14 +6,23 @@ let gameBoard = (function() {
 
 let Player = (name, mark, turn) => {
     function makeMove(cell) {
-        cell.textContent = mark
+        if (cell.textContent == '') {
+            cell.textContent = mark
+            endTurn();
+        }
     }
 
+    function endTurn() {
+        gameControl.playerOne.turn = !gameControl.playerOne.turn;
+        gameControl.playerTwo.turn = !gameControl.playerTwo.turn;
+    }
+    
     return {
         name: name,
         mark: mark,
         turn: turn,
-        makeMove};
+        makeMove
+    };
 };
 
 let gameControl = (function() {
@@ -24,15 +33,11 @@ let gameControl = (function() {
         return playerOne.turn ? playerOne : playerTwo;
     };
 
-    function _endTurn() {
-        playerOne.turn = !playerOne.turn;
-        playerTwo.turn = !playerTwo.turn;
-    }
-
     gameBoard.htmlBoard.forEach(cell => {
         cell.addEventListener('click', () => {
             _getCurrentPlayer().makeMove(cell);
-            _endTurn();
         });
     });
+
+    return {playerOne, playerTwo};
 })();
