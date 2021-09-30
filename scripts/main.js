@@ -1,24 +1,28 @@
 let gameBoard = (function() {
     let board = ['x', 'o', 'o', 'o', 'x', 'o', 'o', 'x', 'x'];
     let htmlBoard = document.querySelectorAll('.column');
-    let i = 0;
-    
-    htmlBoard.forEach(cell => {
-        cell.addEventListener('click', function() {
-            cell.textContent = Player.getMark;
-        })
-        //cell.textContent = board[i]
-        //i++;
-    })
+
+    return {htmlBoard};
 })();
 
 let gameControl = (function() {
 
 })();
 
-let Player = (name, mark) => {
+let Player = (name, mark, turn) => {
     const getName = () => name;
     const getMark = () => mark;
-    
-    return {getName, getMark};
+    const isTurn = () => turn;
+    const _makeMove = (cell) => {
+        return function() {cell.textContent = mark};
+    }
+
+    let i = 0;
+    gameBoard.htmlBoard.forEach(cell => {
+        cell.addEventListener('click', _makeMove(cell));
+    });
+
+    return {getName, getMark, isTurn};
 };
+
+const jason = Player('Jason', 'X', true);
