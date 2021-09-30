@@ -2,9 +2,13 @@ let gameBoard = (function() {
     let board = ['x', 'o', 'o', 'o', 'x', 'o', 'o', 'x', 'x'];
     let htmlBoard = document.querySelectorAll('.column');
     let i = 0;
+    
     htmlBoard.forEach(cell => {
-        cell.textContent = board[i]
-        i++;
+        cell.addEventListener('click', function() {
+            cell.textContent = Player.getMark;
+        })
+        //cell.textContent = board[i]
+        //i++;
     })
 })();
 
@@ -18,4 +22,3 @@ let Player = (name, mark) => {
     
     return {getName, getMark};
 };
-
