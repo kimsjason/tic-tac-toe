@@ -11,9 +11,24 @@ let Player = (name, mark, turn) => {
         if (cell.textContent == '') {
             cell.textContent = mark;
             moves.push([cell.parentElement.className, cell.className]);
-            _checkWinner();
-            _endTurn();
         }
+    }
+
+    return {
+        name: name,
+        mark: mark,
+        turn: turn,
+        moves: moves,
+        makeMove
+    };
+};
+
+let gameControl = (function() {
+    const playerOne = Player('Jason', 'X', true);
+    const playerTwo = Player('Computer', 'O', false);
+    
+    function _getCurrentPlayer() {
+        return playerOne.turn ? playerOne : playerTwo;
     }
 
     function _endTurn() {
@@ -21,7 +36,7 @@ let Player = (name, mark, turn) => {
         gameControl.playerTwo.turn = !gameControl.playerTwo.turn;
     }
     
-    function _checkWinner() {
+    function _checkWinner(player) {
         const reducer = function(uniqueMoves, move) {
             // Counts unique rows
             if (move[0] in uniqueMoves) {
@@ -38,7 +53,7 @@ let Player = (name, mark, turn) => {
             return uniqueMoves;
         }
 
-        const uniqueMoves = moves.reduce(reducer, {});
+        const uniqueMoves = player.moves.reduce(reducer, {});
         console.log(uniqueMoves);
         for (moveType in uniqueMoves) {
             // Checks 3 in a row for rows & columns
@@ -50,28 +65,13 @@ let Player = (name, mark, turn) => {
                 console.log('winner winner chicken dinner');
             }
         }
-    }   
-    
-    return {
-        name: name,
-        mark: mark,
-        turn: turn,
-        moves: moves,
-        makeMove
-    };
-};
-
-let gameControl = (function() {
-    const playerOne = Player('Jason', 'X', true);
-    const playerTwo = Player('Computer', 'O', false);
-    
-    function _getCurrentPlayer() {
-        return playerOne.turn ? playerOne : playerTwo;
-    };
+    }
 
     gameBoard.htmlBoard.forEach(cell => {
         cell.addEventListener('click', () => {
             _getCurrentPlayer().makeMove(cell);
+            _checkWinner(_getCurrentPlayer());
+            _endTurn();
         });
     });
 
