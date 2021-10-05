@@ -24,16 +24,16 @@ let Player = (name, mark, turn) => {
 };
 
 let gameControl = (function() {
-    const playerOne = Player('Jason', 'X', true);
-    const playerTwo = Player('Computer', 'O', false);
-    
+    let playerOne = Player('Jason', 'X', true);
+    let playerTwo = Player('Computer', 'O', false);
+
     function _getCurrentPlayer() {
         return playerOne.turn ? playerOne : playerTwo;
     }
 
     function _endTurn() {
-        gameControl.playerOne.turn = !gameControl.playerOne.turn;
-        gameControl.playerTwo.turn = !gameControl.playerTwo.turn;
+        playerOne.turn = !playerOne.turn;
+        playerTwo.turn = !playerTwo.turn;
     }
     
     function _checkWinner(player) {
@@ -54,25 +54,41 @@ let gameControl = (function() {
         }
 
         const uniqueMoves = player.moves.reduce(reducer, {});
-        console.log(uniqueMoves);
         for (moveType in uniqueMoves) {
             // Checks 3 in a row for rows & columns
             if (uniqueMoves[moveType] == 3) {
                 console.log('winner winner, chicken dinner!!');
+                _endGame();
             } 
             // Checks 3 in a row for diagonals - there has to be one count for every row & column
             else if (Object.keys(uniqueMoves).length == 6) {
                 console.log('winner winner chicken dinner');
+                _endGame();
             }
         }
     }
-
-    gameBoard.htmlBoard.forEach(cell => {
-        cell.addEventListener('click', () => {
+    
+    function _processEvents(cell) {
+        return function() {
             _getCurrentPlayer().makeMove(cell);
             _checkWinner(_getCurrentPlayer());
             _endTurn();
-        });
+        }
+    }
+    
+    function _endGame() {
+        let i = 0;
+        gameBoard.htmlBoard.forEach(cell => {
+            cell.removeEventListener('click', handlers[i]);
+            i++;
+        })
+    }
+
+    let index = 0;
+    const handlers = []; // Need to store function reference in array to remove event listener
+    gameBoard.htmlBoard.forEach(cell => {
+        cell.addEventListener('click', handlers[index] = _processEvents(cell));
+        index++;
     });
 
     return {playerOne, playerTwo};
